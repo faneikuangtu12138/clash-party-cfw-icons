@@ -18,6 +18,26 @@
 
 仓库保存的是图标和软件默认行为。个人订阅、节点、密码和代理配置仍由用户自行导入；软件内可用原有导出、导入或备份功能迁移。
 
+## Arch Linux x86_64
+
+在 Releases 下载 `clash-party-cfw-icons-bin-*.pkg.tar.zst`，然后安装预编译包：
+
+```bash
+sudo pacman -U ./clash-party-cfw-icons-bin-*.pkg.tar.zst
+```
+
+也可以下载同一 Release 的 `clash-party-cfw-icons-bin-PKGBUILD.tar.gz`，解压后运行：
+
+```bash
+mkdir -p pkgbuild
+tar -xzf clash-party-cfw-icons-bin-PKGBUILD.tar.gz -C ./pkgbuild
+yay -Bi ./pkgbuild
+```
+
+`PKGBUILD` 下载已编译程序并验证 SHA-256，只在本机封包，不需要编译 Electron 或安装 Node.js。启动命令为 `clash-party`，桌面菜单名称为 Clash Party (CFW Icons)。包声明了与原版 Clash Party / Mihomo Party 的冲突，由 pacman 提示处理替换。
+
+本定制包尚未发布到 AUR，因此 `yay -S clash-party-cfw-icons-bin` 暂不可用；发布到 AUR 需要单独的 AUR 账号和 SSH 密钥，GitHub 账号不能代替。Linux 的更新由 pacman / PKGBUILD 管理。
+
 ## 从源码构建
 
 需要 Git、Node.js 22+ 和 package.json 指定版本的 pnpm，在 Windows PowerShell 中执行：
@@ -37,6 +57,8 @@ node scripts/cfw-release.mjs
 ## 自动构建与更新
 
 推送 `v*-cfw.*` 标签会通过 GitHub Actions 校验代码、构建 Windows x64 安装包与便携包，并发布 Release。也可以在 Actions 页面手动运行 Windows CFW build 流程；手动构建提供构建产物下载。
+
+Arch Linux CFW build 流程同时响应这些标签，在 Linux 上构建 x64 程序，再在 Arch Linux 容器中使用 makepkg 生成 `.pkg.tar.zst`，验证包安装、动态库和程序启动，并上传二进制包及带校验值的 PKGBUILD。手动运行时勾选 publish，可以向 package.json 对应的 Release 添加 Arch 产物。
 
 本定制版的软件更新源指向本仓库，避免更新回官方版本后丢失图标。未来更新时，先合并上游源码，保留本版图标及状态映射，再修改 package.json 的版本并发布新标签。
 

@@ -1,0 +1,60 @@
+name: Arch Linux CFW build
+on:
+  push:
+    tags:
+      - 'v*-cfw.*'
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Add Arch packages to the release for package.json version
+        type: boolean
+        default: false
+permissions:
+  contents: write
+jobs:
+  arch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install dependencies and Linux resources
+        run: pnpm install --frozen-lockfile
+      - name: Check source
+        run: pnpm run review
+      - name: Test
+        run: pnpm test
+      - name: Build Linux x64
+        run: |
+          pnpm exec electron-vite build
+          pnpm exec electron-builder --linux dir --x64 --publish never
+          node scripts/cfw-arch-release.mjs
+      - name: Build and verify with Arch Linux makepkg
+        run: |
+          docker run --rm -v "$PWD:/work" -w /work archlinux:base-devel bash packaging/arch/build-and-verify.sh
+          node scripts/cfw-arch-release.mjs --checksums
+      - name: Determine release tag
+        id: version
+        run: node -e "console.log('tag=v' + JSON.parse(require('fs').readFileSync('package.json')).version)" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@v6
+        with:
+          name: clash-party-cfw-arch-x86_64
+          path: |
+            dist/*.pkg.tar.zst
+            dist/*.tar.gz
+            dist/*.sha256
+            dist/arch/
+          if-no-files-found: error
+      - name: Add Arch packages to Release
+        if: startsWith(github.ref, 'refs/tags/') || inputs.publish
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          prerelease: false
+          files: |
+            dist/*.pkg.tar.zst
+            dist/*.tar.gz
+            dist/*.sha256

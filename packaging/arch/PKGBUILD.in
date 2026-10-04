@@ -1,0 +1,48 @@
+# Maintainer: faneikuangtu12138 <95536383+faneikuangtu12138@users.noreply.github.com>
+pkgname=clash-party-cfw-icons-bin
+pkgver=@PKGVER@
+pkgrel=1
+pkgdesc='Clash Party with classic CFW gradient cat icons'
+arch=('x86_64')
+url='https://github.com/faneikuangtu12138/clash-party-cfw-icons'
+license=('GPL-3.0-only')
+depends=('alsa-lib' 'gtk3' 'libnotify' 'nss' 'libxss' 'libxtst' 'xdg-utils'
+         'at-spi2-core' 'util-linux-libs' 'libsecret' 'wl-clipboard' 'cups'
+         'libxkbcommon' 'libdrm' 'mesa' 'gcc-libs')
+optdepends=('libappindicator-gtk3: tray indicator on compatible desktops')
+provides=('clash-party' 'mihomo-party')
+conflicts=('clash-party' 'clash-party-bin' 'clash-party-git' 'mihomo-party'
+           'mihomo-party-bin' 'mihomo-party-git' 'mihomo-party-electron'
+           'mihomo-party-electron-bin')
+options=('!strip' '!debug')
+_version='@VERSION@'
+source=("clash-party-linux-${_version}-x64.tar.gz::${url}/releases/download/v${_version}/clash-party-linux-${_version}-x64.tar.gz")
+sha256sums=('@SHA256@')
+
+package() {
+    install -dm755 "${pkgdir}/opt/clash-party"
+    cp -a "${srcdir}/linux-unpacked/." "${pkgdir}/opt/clash-party/"
+    chmod 4755 "${pkgdir}/opt/clash-party/chrome-sandbox"
+    # Match the upstream Linux package's TUN permissions.
+    chmod 4755 "${pkgdir}/opt/clash-party/resources/sidecar/"{mihomo,mihomo-alpha,mihomo-smart}
+    install -dm755 "${pkgdir}/usr/bin"
+    ln -s /opt/clash-party/mihomo-party "${pkgdir}/usr/bin/clash-party"
+    ln -s clash-party "${pkgdir}/usr/bin/mihomo-party"
+    install -Dm644 "${srcdir}/build/icon.png" "${pkgdir}/usr/share/icons/hicolor/256x256/apps/mihomo-party.png"
+    install -Dm644 "${srcdir}/LICENSE.md" "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+    install -dm755 "${pkgdir}/usr/share/applications"
+    cat > "${pkgdir}/usr/share/applications/mihomo-party.desktop" <<'DESKTOP'
+[Desktop Entry]
+Name=Clash Party (CFW Icons)
+GenericName=Proxy Client
+Comment=Clash Party with classic CFW gradient cat icons
+Exec=clash-party %U
+Icon=mihomo-party
+Type=Application
+Terminal=false
+Categories=Network;Utility;
+MimeType=x-scheme-handler/clash;x-scheme-handler/mihomo;
+Keywords=proxy;clash;mihomo;vpn;
+StartupWMClass=mihomo-party
+DESKTOP
+}
