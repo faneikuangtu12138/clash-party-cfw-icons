@@ -29,7 +29,7 @@ if (process.argv.includes('--checksums')) {
     '-C',
     '..',
     'build/icon.png',
-    'LICENSE.md'
+    'LICENSE'
   ])
   const digest = createHash('sha256').update(readFileSync(archive)).digest('hex')
   writeFileSync(`${archive}.sha256`, `${digest}  ${archiveName}\n`)

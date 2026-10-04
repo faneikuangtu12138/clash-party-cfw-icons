@@ -29,7 +29,7 @@ package() {
     ln -s /opt/clash-party/mihomo-party "${pkgdir}/usr/bin/clash-party"
     ln -s clash-party "${pkgdir}/usr/bin/mihomo-party"
     install -Dm644 "${srcdir}/build/icon.png" "${pkgdir}/usr/share/icons/hicolor/256x256/apps/mihomo-party.png"
-    install -Dm644 "${srcdir}/LICENSE.md" "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+    install -Dm644 "${srcdir}/LICENSE" "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
     install -dm755 "${pkgdir}/usr/share/applications"
     cat > "${pkgdir}/usr/share/applications/mihomo-party.desktop" <<'DESKTOP'
 [Desktop Entry]
