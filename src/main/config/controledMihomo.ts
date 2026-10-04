@@ -155,5 +155,9 @@ export async function patchControledMihomoConfig(patch: Partial<IMihomoConfig>):
     } catch (error) {
       controledMihomoLogger.warn('Failed to schedule runtime config Gist sync', error)
     }
+    if (Object.prototype.hasOwnProperty.call(nextPatch, 'mode')) {
+      const { updateTrayIcon } = await import('../resolve/tray')
+      await updateTrayIcon()
+    }
   })
 }

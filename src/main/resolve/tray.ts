@@ -16,11 +16,9 @@ import { DEFAULT_MIHOMO_PORTS } from '../../shared/appConfig'
 import icoIcon from '../../../resources/icon.ico?asset'
 import icoIconBlue from '../../../resources/icon_blue.ico?asset'
 import icoIconRed from '../../../resources/icon_red.ico?asset'
-import icoIconGreen from '../../../resources/icon_green.ico?asset'
 import pngIcon from '../../../resources/icon.png?asset'
 import pngIconBlue from '../../../resources/icon_blue.png?asset'
 import pngIconRed from '../../../resources/icon_red.png?asset'
-import pngIconGreen from '../../../resources/icon_green.png?asset'
 import templateIcon from '../../../resources/iconTemplate.png?asset'
 import {
   mihomoChangeProxy,
@@ -42,13 +40,13 @@ import {
 } from '../core/manager'
 import { trayLogger } from '../utils/logger'
 import { writeClipboardText } from '../utils/clipboard'
+import { getClassicCatColor, type TrayIconStatus } from '../utils/classicCatTheme'
 import { floatingWindow, triggerFloatingWindow } from './floatingWindow'
 
 export let tray: Tray | null = null
 let trayMenu: Menu | null = null
 // macOS 流量显示状态，避免异步读取配置导致的时序问题
 let macTrafficIconEnabled = false
-type TrayIconStatus = 'white' | 'blue' | 'green' | 'red'
 type TrayImage = Electron.NativeImage | string
 type CustomTrayIconKey = keyof ICustomTrayIcons
 const customTrayIconSize = 16
@@ -593,21 +591,16 @@ export async function hideDockIcon(): Promise<void> {
   await setDockIconVisible(false)
 }
 
-const getIconPaths = (): Record<TrayIconStatus, string> => {
-  if (process.platform === 'win32') {
-    return {
-      white: icoIcon,
-      blue: icoIconBlue,
-      green: icoIconGreen,
-      red: icoIconRed
-    }
-  } else {
-    return {
-      white: pngIcon,
-      blue: pngIconBlue,
-      green: pngIconGreen,
-      red: pngIconRed
-    }
+const getIconPaths = (mode = 'rule'): Record<TrayIconStatus, string> => {
+  const icons =
+    process.platform === 'win32'
+      ? { blue: icoIcon, green: icoIconBlue, orange: icoIconRed }
+      : { blue: pngIcon, green: pngIconBlue, orange: pngIconRed }
+  return {
+    white: icons[getClassicCatColor('white', mode)],
+    blue: icons[getClassicCatColor('blue', mode)],
+    green: icons[getClassicCatColor('green', mode)],
+    red: icons[getClassicCatColor('red', mode)]
   }
 }
 
@@ -619,7 +612,8 @@ export async function getTrayTrafficStyle(): Promise<ITrayTrafficStyle> {
   const { disableTrayIconColor = false } = await getAppConfig()
   const status = await getTrayIconStatus()
   const colored = !disableTrayIconColor && status !== 'white'
-  const source = nativeImage.createFromPath(colored ? getIconPaths()[status] : templateIcon)
+  const { mode } = await getControledMihomoConfig()
+  const source = nativeImage.createFromPath(colored ? getIconPaths(mode)[status] : templateIcon)
   // 只缩不放：状态图标是 512px，直接丢给渲染进程既浪费又要一次性缩到 36px；模板图标本身只有 64px
   const icon =
     source.getSize().height > customTrayIconSize * 8
@@ -817,11 +811,11 @@ export function updateTrayIconImmediate(sysProxyEnabled: boolean, tunEnabled: bo
   if (!tray) return
 
   const status = calculateTrayIconStatus(sysProxyEnabled, tunEnabled)
-  const iconPaths = getIconPaths()
-
   getAppConfig().then(async (appConfig) => {
     if (!tray) return
     try {
+      const { mode } = await getControledMihomoConfig()
+      const iconPaths = getIconPaths(mode)
       const { disableTrayIconColor = false } = appConfig
       const customIcon = createCustomTrayImageForStatus(appConfig, status)
       if (customIcon) {
@@ -849,7 +843,8 @@ export async function updateTrayIcon(): Promise<void> {
   const appConfig = await getAppConfig()
   const { disableTrayIconColor = false } = appConfig
   const status = await getTrayIconStatus()
-  const iconPaths = getIconPaths()
+  const { mode } = await getControledMihomoConfig()
+  const iconPaths = getIconPaths(mode)
 
   try {
     const customIcon = createCustomTrayImageForStatus(appConfig, status)

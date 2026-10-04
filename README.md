@@ -1,3 +1,5 @@
+> **个人定制版：经典 CFW 渐变小猫图标。下载、配色说明和构建方法请看 [README-CFW.md](README-CFW.md)。**
+
 <h3 align="center">
   <img height='48px' src='./images/icon-white.png#gh-dark-mode-only'>
   <img height='48px' src='./images/icon-black.png#gh-light-mode-only'>

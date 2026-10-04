@@ -119,4 +119,7 @@ pacman:
     - wl-clipboard
   artifactName: clash-party-linux-${version}-${arch}.pkg.tar.zst
 npmRebuild: true
-publish: []
+publish:
+  - provider: github
+    owner: faneikuangtu12138
+    repo: clash-party-cfw-icons
