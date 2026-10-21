@@ -92,11 +92,33 @@ deb:
     - --depends
     - wl-clipboard
 rpm:
+  packageName: clash-party-cfw-icons-bin
   afterInstall: 'build/linux/postinst'
   afterRemove: 'build/linux/postuninst'
-  fpm:
-    - --depends
+  depends:
+    - alsa-lib
+    - gtk3
+    - libnotify
+    - nss
+    - libXScrnSaver
+    - libXtst
+    - xdg-utils
+    - at-spi2-core
+    - libuuid
+    - libsecret
     - wl-clipboard
+    - cups-libs
+    - libxkbcommon
+    - libdrm
+    - mesa-libgbm
+    - libstdc++
+  fpm:
+    - --license
+    - GPL-3.0-only
+    - --conflicts
+    - mihomo-party
+    - --conflicts
+    - clash-party
     - '--rpm-rpmbuild-define'
     - '_build_id_links none'
 pacman:

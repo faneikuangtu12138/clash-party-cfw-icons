@@ -38,6 +38,26 @@ yay -Bi ./pkgbuild
 
 本定制包尚未发布到 AUR，因此 `yay -S clash-party-cfw-icons-bin` 暂不可用；发布到 AUR 需要单独的 AUR 账号和 SSH 密钥，GitHub 账号不能代替。Linux 的更新由 pacman / PKGBUILD 管理。
 
+## Fedora Linux x86_64
+
+从 [Releases](https://github.com/faneikuangtu12138/clash-party-cfw-icons/releases/latest) 下载 `clash-party-linux-2.0.3-cfw.1-x86_64.rpm`，在文件所在目录打开终端：
+
+```bash
+sudo dnf install ./clash-party-linux-2.0.3-cfw.1-x86_64.rpm
+```
+
+DNF 会从已配置的 Fedora 软件源自动安装所需依赖。安装后在应用菜单打开 **Clash Party**，或运行 `clash-party`。软件包名为 `clash-party-cfw-icons-bin`，与原版 Clash Party / Mihomo Party 冲突；如已安装原版，需要先通过包管理器处理替换。个人订阅和配置通过软件导入。
+
+下载同名 `.rpm.sha256` 文件可在安装前校验：
+
+```bash
+sha256sum -c clash-party-linux-2.0.3-cfw.1-x86_64.rpm.sha256
+```
+
+后续版本下载新 RPM 后再次运行 `sudo dnf install ./新文件名.rpm`。卸载程序使用 `sudo dnf remove clash-party-cfw-icons-bin`。此安装方式适用于 Fedora Workstation / KDE 等使用 DNF 的常规 Fedora 系统。
+
+RPM 由 Fedora RPM CFW build 流程生成，在 Fedora 44 容器中验证依赖安装、图标、动态库、程序与内核启动以及卸载。容器验证不包含完整桌面环境的托盘交互。
+
 ## 从源码构建
 
 需要 Git、Node.js 22+ 和 package.json 指定版本的 pnpm，在 Windows PowerShell 中执行：
@@ -59,6 +79,8 @@ node scripts/cfw-release.mjs
 推送 `v*-cfw.*` 标签会通过 GitHub Actions 校验代码、构建 Windows x64 安装包与便携包，并发布 Release。也可以在 Actions 页面手动运行 Windows CFW build 流程；手动构建提供构建产物下载。
 
 Arch Linux CFW build 流程同时响应这些标签，在 Linux 上构建 x64 程序，再在 Arch Linux 容器中使用 makepkg 生成 `.pkg.tar.zst`，验证包安装、动态库和程序启动，并上传二进制包及带校验值的 PKGBUILD。手动运行时勾选 publish，可以向 package.json 对应的 Release 添加 Arch 产物。
+
+Fedora RPM CFW build 流程也响应相同标签，构建并验证 x86_64 RPM 后添加到 Release；手动运行时同样可以勾选 publish。
 
 本定制版的软件更新源指向本仓库，避免更新回官方版本后丢失图标。未来更新时，先合并上游源码，保留本版图标及状态映射，再修改 package.json 的版本并发布新标签。
 

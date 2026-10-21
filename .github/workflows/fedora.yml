@@ -1,0 +1,60 @@
+name: Fedora RPM CFW build
+on:
+  push:
+    tags:
+      - 'v*-cfw.*'
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Add Fedora RPM to the release for package.json version
+        type: boolean
+        default: false
+permissions:
+  contents: write
+jobs:
+  fedora:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install RPM build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y rpm
+      - name: Install dependencies and Linux resources
+        run: pnpm install --frozen-lockfile
+      - name: Check source
+        run: pnpm run review
+      - name: Test
+        run: pnpm test
+      - name: Build Fedora x86_64 RPM
+        run: |
+          pnpm exec electron-vite build
+          pnpm exec electron-builder --linux rpm --x64 --publish never
+          node scripts/cfw-rpm-release.mjs
+      - name: Verify install and startup on Fedora 44
+        run: docker run --rm -v "$PWD:/work" -w /work registry.fedoraproject.org/fedora:44 bash packaging/fedora/verify.sh
+      - name: Determine release tag
+        id: version
+        run: node -e "console.log('tag=v' + JSON.parse(require('fs').readFileSync('package.json')).version)" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@v6
+        with:
+          name: clash-party-cfw-fedora-x86_64
+          path: |
+            dist/*.rpm
+            dist/*.rpm.sha256
+            dist/fedora/
+          if-no-files-found: error
+      - name: Add Fedora RPM to Release
+        if: startsWith(github.ref, 'refs/tags/') || inputs.publish
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          prerelease: false
+          files: |
+            dist/*.rpm
+            dist/*.rpm.sha256
