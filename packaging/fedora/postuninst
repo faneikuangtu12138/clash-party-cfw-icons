@@ -1,0 +1,22 @@
+#!/bin/bash
+set -e
+
+# RPM passes 0 on final removal and a nonzero count during an upgrade.
+if [ "$1" != 0 ]; then
+    exit 0
+fi
+if [ -L /usr/bin/mihomo-party ] && [ "$(readlink /usr/bin/mihomo-party)" = clash-party ]; then
+    rm -f /usr/bin/mihomo-party
+fi
+if [ -L /usr/bin/clash-party ] && [ "$(readlink /usr/bin/clash-party)" = '/opt/${sanitizedProductName}/${executable}' ]; then
+    rm -f /usr/bin/clash-party
+fi
+if command -v update-mime-database >/dev/null 2>&1; then
+    update-mime-database /usr/share/mime || true
+fi
+if command -v update-desktop-database >/dev/null 2>&1; then
+    update-desktop-database /usr/share/applications || true
+fi
+if command -v gtk-update-icon-cache >/dev/null 2>&1; then
+    gtk-update-icon-cache -f -t /usr/share/icons/hicolor || true
+fi

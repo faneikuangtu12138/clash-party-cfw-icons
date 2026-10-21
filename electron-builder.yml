@@ -93,8 +93,8 @@ deb:
     - wl-clipboard
 rpm:
   packageName: clash-party-cfw-icons-bin
-  afterInstall: 'build/linux/postinst'
-  afterRemove: 'build/linux/postuninst'
+  afterInstall: 'packaging/fedora/postinst'
+  afterRemove: 'packaging/fedora/postuninst'
   depends:
     - alsa-lib
     - gtk3

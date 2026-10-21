@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -euxo pipefail
 mkdir -p /work/dist/fedora
 
 # Resolve runtime dependencies using only the package's own Requires first.
@@ -10,8 +10,10 @@ rpm --checksig /work/dist/*.rpm
 # The upstream post-install script sets the sandbox/core setuid permissions.
 rpm -V --nomode clash-party-cfw-icons-bin
 test -x /usr/bin/clash-party
-test "$(stat -c '%a' /opt/clash-party/chrome-sandbox)" = 4755
-ldd /opt/clash-party/mihomo-party | tee /work/dist/fedora/ldd.log
+cfw_binary="$(readlink -f /usr/bin/clash-party)"
+cfw_install_dir="$(dirname "$cfw_binary")"
+test "$(stat -c '%a' "$cfw_install_dir/chrome-sandbox")" = 4755
+ldd "$cfw_binary" | tee /work/dist/fedora/ldd.log
 if grep -q 'not found' /work/dist/fedora/ldd.log; then
     exit 1
 fi
@@ -39,4 +41,6 @@ fi
 grep -r 'Core ready' /home/tester/.config
 dnf -y remove clash-party-cfw-icons-bin
 test ! -e /usr/bin/clash-party
+test ! -L /usr/bin/clash-party
+test ! -L /usr/bin/mihomo-party
 printf 'Fedora RPM install, icon, runtime, core startup and removal checks passed.\n'

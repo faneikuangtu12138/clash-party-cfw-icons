@@ -1,0 +1,19 @@
+#!/bin/bash
+set -e
+
+# electron-builder substitutes these values, including the product's spaces.
+cfw_install_dir='/opt/${sanitizedProductName}'
+ln -sfn '/opt/${sanitizedProductName}/${executable}' /usr/bin/clash-party
+ln -sfn clash-party /usr/bin/mihomo-party
+chmod 4755 "$cfw_install_dir/chrome-sandbox"
+chmod 4755 "$cfw_install_dir/resources/sidecar/"{mihomo,mihomo-alpha,mihomo-smart}
+
+if command -v update-mime-database >/dev/null 2>&1; then
+    update-mime-database /usr/share/mime || true
+fi
+if command -v update-desktop-database >/dev/null 2>&1; then
+    update-desktop-database /usr/share/applications || true
+fi
+if command -v gtk-update-icon-cache >/dev/null 2>&1; then
+    gtk-update-icon-cache -f -t /usr/share/icons/hicolor || true
+fi
