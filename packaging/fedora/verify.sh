@@ -38,7 +38,7 @@ if [[ $startup_status != 124 && $startup_status != 0 ]]; then
     cat /work/dist/fedora/startup.log
     exit "$startup_status"
 fi
-grep -r 'Core ready' /home/tester/.config
+grep -F 'Core ready' /home/tester/.config/mihomo-party/logs/clash-party-*.log
 dnf -y remove clash-party-cfw-icons-bin
 test ! -e /usr/bin/clash-party
 test ! -L /usr/bin/clash-party
