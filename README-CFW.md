@@ -1,6 +1,6 @@
 # Clash Party：经典 CFW 小猫版
 
-基于 [Clash Party v2.0.3](https://github.com/mihomo-party-org/clash-party/tree/v2.0.3) 的个人定制版本。
+基于 [Clash Party v2.0.4](https://github.com/mihomo-party-org/clash-party/tree/v2.0.4) 的个人定制版本。
 
 ![图标预览](images/classic-cfw-preview.png)
 
@@ -14,7 +14,7 @@
 
 ## 在另一台电脑上使用
 
-打开本仓库的 [Releases](https://github.com/faneikuangtu12138/clash-party-cfw-icons/releases/latest)，下载 Windows x64 的 `setup.exe` 安装包或 `portable.7z` 便携包。便携包解压后运行 `Clash Party.exe`，用户数据保存在同目录的 `data` 中。图标和配色已编入程序，无需另外修改 EXE 或 app.asar。
+打开本仓库的 [Releases](https://github.com/faneikuangtu12138/clash-party-cfw-icons/releases/latest)，下载 Windows x64 的 `setup.exe` 安装包或 `portable.7z` 便携包。安装版升级时，退出旧版后运行新版安装器并选择原来的安装目录。便携版用户可解压新版到新目录，再将旧版的 `data` 目录复制过去。图标和配色已编入程序，无需另外修改 EXE 或 app.asar。
 
 仓库保存的是图标和软件默认行为。个人订阅、节点、密码和代理配置仍由用户自行导入；软件内可用原有导出、导入或备份功能迁移。
 
@@ -25,6 +25,8 @@
 ```bash
 sudo pacman -U ./clash-party-cfw-icons-bin-*.pkg.tar.zst
 ```
+
+也可使用 `yay -U ./clash-party-cfw-icons-bin-*.pkg.tar.zst`。新版沿用旧版定制包的包名，可以直接升级。
 
 也可以下载同一 Release 的 `clash-party-cfw-icons-bin-PKGBUILD.tar.gz`，解压后运行：
 
@@ -40,10 +42,10 @@ yay -Bi ./pkgbuild
 
 ## Fedora Linux x86_64
 
-从 [Releases](https://github.com/faneikuangtu12138/clash-party-cfw-icons/releases/latest) 下载 `clash-party-linux-2.0.3-cfw.1-x86_64.rpm`，在文件所在目录打开终端：
+从 [Releases](https://github.com/faneikuangtu12138/clash-party-cfw-icons/releases/latest) 下载 `clash-party-linux-2.0.4-cfw.1-x86_64.rpm`，在文件所在目录打开终端：
 
 ```bash
-sudo dnf install ./clash-party-linux-2.0.3-cfw.1-x86_64.rpm
+sudo dnf install ./clash-party-linux-2.0.4-cfw.1-x86_64.rpm
 ```
 
 DNF 会从已配置的 Fedora 软件源自动安装所需依赖。安装后在应用菜单打开 **Clash Party**，或运行 `clash-party`。软件包名为 `clash-party-cfw-icons-bin`，与原版 Clash Party / Mihomo Party 冲突；如已安装原版，需要先通过包管理器处理替换。个人订阅和配置通过软件导入。
@@ -51,7 +53,7 @@ DNF 会从已配置的 Fedora 软件源自动安装所需依赖。安装后在�
 下载同名 `.rpm.sha256` 文件可在安装前校验：
 
 ```bash
-sha256sum -c clash-party-linux-2.0.3-cfw.1-x86_64.rpm.sha256
+sha256sum -c clash-party-linux-2.0.4-cfw.1-x86_64.rpm.sha256
 ```
 
 后续版本下载新 RPM 后再次运行 `sudo dnf install ./新文件名.rpm`。卸载程序使用 `sudo dnf remove clash-party-cfw-icons-bin`。此安装方式适用于 Fedora Workstation / KDE 等使用 DNF 的常规 Fedora 系统。

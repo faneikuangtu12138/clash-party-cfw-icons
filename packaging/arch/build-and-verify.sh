@@ -28,7 +28,7 @@ if [[ $startup_status != 124 && $startup_status != 0 ]]; then
     cat /work/dist/arch/startup.log
     exit "$startup_status"
 fi
-grep -r 'Core ready' /home/builder/.config
+grep -F 'Core ready' /home/builder/.config/mihomo-party/logs/clash-party-*.log
 cp "${package[0]}" /work/dist/
 cp /tmp/arch-build/.SRCINFO /work/dist/arch/
 tar -czf /work/dist/clash-party-cfw-icons-bin-PKGBUILD.tar.gz -C /work/dist/arch PKGBUILD .SRCINFO
