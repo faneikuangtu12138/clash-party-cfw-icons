@@ -20,6 +20,9 @@ namcap "${package[0]}" | tee /work/dist/arch/namcap.log
 # A headless container cannot exercise a desktop tray. Check that the application
 # starts and the bundled Linux core becomes ready in an isolated home directory.
 install -dm700 -o builder -g builder /tmp/arch-runtime
+# A pre-2.0.4 profile has no modeSelected field; test upgrading it to standard mode.
+runuser -u builder -- mkdir -p /home/builder/.config/mihomo-party
+printf 'showWindow: true\n' | runuser -u builder -- tee /home/builder/.config/mihomo-party/config.yaml > /dev/null
 set +e
 timeout --kill-after=5s 25s xvfb-run -a runuser -u builder -- env XDG_RUNTIME_DIR=/tmp/arch-runtime /usr/bin/clash-party --no-sandbox --disable-gpu > /work/dist/arch/startup.log 2>&1
 startup_status=$?

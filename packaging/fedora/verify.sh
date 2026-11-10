@@ -30,6 +30,9 @@ PYTHON
 # Verify startup in a temporary user profile; a container has no desktop tray.
 useradd -m tester
 install -dm700 -o tester -g tester /tmp/fedora-runtime
+# Use a previous-version profile so the headless test exercises mode migration.
+runuser -u tester -- mkdir -p /home/tester/.config/mihomo-party
+printf 'showWindow: true\n' | runuser -u tester -- tee /home/tester/.config/mihomo-party/config.yaml > /dev/null
 set +e
 timeout --kill-after=5s 25s xvfb-run -a runuser -u tester -- env XDG_RUNTIME_DIR=/tmp/fedora-runtime /usr/bin/clash-party --no-sandbox --disable-gpu > /work/dist/fedora/startup.log 2>&1
 startup_status=$?
