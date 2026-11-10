@@ -42,10 +42,10 @@ yay -Bi ./pkgbuild
 
 ## Fedora Linux x86_64
 
-从 [Releases](https://github.com/faneikuangtu12138/clash-party-cfw-icons/releases/latest) 下载 `clash-party-linux-2.0.4-cfw.1-x86_64.rpm`，在文件所在目录打开终端：
+当前更新提供 Windows 和 Arch Linux 安装包。Fedora 可从 [v2.0.3-cfw.1](https://github.com/faneikuangtu12138/clash-party-cfw-icons/releases/tag/v2.0.3-cfw.1) 下载已验证的 RPM，在文件所在目录打开终端：
 
 ```bash
-sudo dnf install ./clash-party-linux-2.0.4-cfw.1-x86_64.rpm
+sudo dnf install ./clash-party-linux-2.0.3-cfw.1-x86_64.rpm
 ```
 
 DNF 会从已配置的 Fedora 软件源自动安装所需依赖。安装后在应用菜单打开 **Clash Party**，或运行 `clash-party`。软件包名为 `clash-party-cfw-icons-bin`，与原版 Clash Party / Mihomo Party 冲突；如已安装原版，需要先通过包管理器处理替换。个人订阅和配置通过软件导入。
@@ -53,7 +53,7 @@ DNF 会从已配置的 Fedora 软件源自动安装所需依赖。安装后在�
 下载同名 `.rpm.sha256` 文件可在安装前校验：
 
 ```bash
-sha256sum -c clash-party-linux-2.0.4-cfw.1-x86_64.rpm.sha256
+sha256sum -c clash-party-linux-2.0.3-cfw.1-x86_64.rpm.sha256
 ```
 
 后续版本下载新 RPM 后再次运行 `sudo dnf install ./新文件名.rpm`。卸载程序使用 `sudo dnf remove clash-party-cfw-icons-bin`。此安装方式适用于 Fedora Workstation / KDE 等使用 DNF 的常规 Fedora 系统。
